@@ -2,7 +2,8 @@
   "name": "COOL NAME PENDING",
   "short_name": "Cool Name",
   "start_url": "./",
-  "display": "browser",
+  "scope": "./",
+  "display": "standalone",
   "background_color": "#0b0c10",
   "theme_color": "#0b0c10",
   "icons": [

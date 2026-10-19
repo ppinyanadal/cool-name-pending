@@ -6,76 +6,1047 @@
 <title>COOL NAME PENDING</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0b0c10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cool Name">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-  :root { --bg: #0b0c10; --surface: #13151b; --ink: #f4f5f8; --muted: #8e93a3; --line: rgba(255,255,255,.14); color-scheme: dark; }
-  * { box-sizing: border-box; }
-  body { margin: 0; min-height: 100vh; background: radial-gradient(80% 50% at 50% 0%, rgba(139,123,255,.18), transparent), var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; display: grid; place-items: center; padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
-  main { width: 100%; max-width: 420px; display: grid; gap: 22px; justify-items: center; text-align: center; }
-  img.logo { width: 112px; height: 112px; border-radius: 26px; border: 1px solid var(--line); }
-  h1 { margin: 0; font-size: 15px; letter-spacing: .1em; font-weight: 700; }
-  h1 span { color: var(--muted); }
-  .card { width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; }
-  .card h2 { margin: 0 0 8px; font-size: 15px; }
-  .card ol { margin: 0; padding-left: 20px; color: var(--muted); }
-  .card li { margin: 4px 0; }
-  .card b { color: var(--ink); font-weight: 600; }
-  a.go, button { display: block; width: 100%; border: 0; border-radius: 14px; padding: 14px; font: inherit; font-weight: 600; text-align: center; text-decoration: none; cursor: pointer; }
-  a.go { background: var(--ink); color: var(--bg); }
-  button { background: transparent; color: var(--muted); border: 1px solid var(--line); }
-  p.small { margin: 0; color: var(--muted); font-size: 13px; }
-  [hidden] { display: none !important; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font: 14px system-ui, -apple-system, "Segoe UI", sans-serif; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
 </style>
+<style>
+/* Layout: "after hours" app shell. One dark world: near-black ground with an ambient glow in the current person's color, glassy hairline surfaces, crisp Geist type. Home = quote of the day (lit by its author's color), stats, leaderboard, search. Friend page = profile + year timeline. Bottom glass dock, FAB above it. */
+:root {
+  --bg: #0b0c10;
+  --surface: #13151b;
+  --surface-2: #1b1e26;
+  --raise: rgba(255,255,255,.035);
+  --ink: #f4f5f8;
+  --muted: #8e93a3;
+  --faint: #5d6272;
+  --line: rgba(255,255,255,.08);
+  --line-2: rgba(255,255,255,.14);
+  --on-c: #0b0c10;
+  --danger: #ff6b7d;
+  --brand: #8b7bff;
+  --scrim: rgba(4,5,8,.66);
+  --f-ui: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; letter-spacing: -.005em; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+body::after { content: ""; position: fixed; z-index: -1; left: 50%; top: -38vh; width: 140vw; max-width: 1400px; height: 80vh; transform: translateX(-50%); background: radial-gradient(closest-side, color-mix(in srgb, var(--c, var(--brand)) 20%, transparent), transparent); pointer-events: none; transition: background .4s ease; }
+button, input, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--c, var(--brand)); outline-offset: 2px; }
+::selection { background: color-mix(in srgb, var(--c, var(--brand)) 45%, transparent); }
+
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* avatars */
+.av { --s: 32px; width: var(--s); height: var(--s); border-radius: 50%; flex: none; display: grid; place-items: center; overflow: hidden; background: var(--c, var(--brand)); color: var(--on-c); font-weight: 700; font-size: calc(var(--s) * .42); line-height: 1; letter-spacing: -.02em; }
+.av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* top bar */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid transparent; }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 14px; }
+.brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 700; font-size: 13.5px; letter-spacing: .08em; text-transform: uppercase; border: 0; background: none; padding: 0; white-space: nowrap; }
+.brand .logo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: #000; border: 1px solid var(--line-2); color: var(--ink); padding: 6px 5px 5px; flex: none; }
+.brand .logo svg { width: 100%; height: auto; display: block; }
+.brand span { color: var(--muted); font-weight: 500; }
+.mebtn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); background: var(--raise); border-radius: 999px; padding: 3px 12px 3px 3px; font-weight: 500; font-size: 14px; }
+.mebtn .av { --s: 28px; }
+.mebtn:hover { border-color: var(--c); }
+
+main { padding-block: 12px calc(170px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 40px; }
+.label { font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.status { color: var(--muted); font-size: 14px; padding: 8px 0; }
+.demo-note { display: flex; gap: 12px; align-items: center; border: 1px dashed var(--line-2); border-radius: 14px; padding: 10px 14px; color: var(--muted); font-size: 13.5px; }
+.demo-note b { font-family: var(--f-mono); font-weight: 500; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: var(--surface-2); border-radius: 6px; padding: 3px 7px; flex: none; }
+
+/* quote of the day */
+.daily { position: relative; overflow: hidden; border-radius: 28px; padding: clamp(24px, 5vw, 40px); background:
+    radial-gradient(90% 120% at 100% 0%, color-mix(in srgb, var(--c) 42%, transparent), transparent 62%),
+    radial-gradient(70% 90% at 0% 100%, color-mix(in srgb, var(--c) 16%, transparent), transparent 70%),
+    var(--surface);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, var(--line)); }
+.daily::after { content: "”"; position: absolute; right: 18px; top: -18px; font-family: Georgia, "Times New Roman", serif; font-size: 220px; line-height: 1; color: color-mix(in srgb, var(--c) 55%, transparent); opacity: .5; pointer-events: none; }
+.daily .eyebrow { position: relative; display: inline-flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: rgba(255,255,255,.07); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 10px; margin-bottom: 26px; }
+.daily .eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--c); display: block; box-shadow: 0 0 10px var(--c); animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+.daily blockquote { position: relative; margin: 0; max-width: 22ch; font-weight: 600; font-size: clamp(28px, 6vw, 46px); line-height: 1.08; letter-spacing: -.035em; text-wrap: balance; overflow-wrap: anywhere; }
+.daily .ctx { position: relative; margin: 14px 0 0; color: var(--muted); font-size: 15px; max-width: 52ch; }
+.daily .by { position: relative; display: flex; align-items: center; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+.daily .by .av { --s: 44px; box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--c); }
+.daily .by .who { font-weight: 600; font-size: 16px; line-height: 1.2; }
+.daily .by .when { font-size: 13px; color: var(--muted); }
+.daily .go { margin-left: auto; border: 1px solid var(--line-2); background: rgba(255,255,255,.06); color: var(--ink); border-radius: 999px; padding: 9px 16px; font-weight: 500; font-size: 14px; transition: background .15s ease, border-color .15s ease; }
+.daily .go:hover { background: rgba(255,255,255,.12); border-color: var(--c); }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--surface); border: 1px solid var(--line); border-radius: 20px; }
+.stat { padding: 16px 18px; min-width: 0; border-left: 1px solid var(--line); }
+.stat:first-child { border-left: 0; }
+.stat .k { font-size: 11.5px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.stat .v { font-weight: 600; font-size: clamp(20px, 4vw, 26px); letter-spacing: -.03em; line-height: 1.2; margin-top: 6px; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.stat .v .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.stat .v .av { --s: 24px; }
+.stat .sub { font-size: 12.5px; color: var(--faint); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 520px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat:first-child { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--line); }
+  .stat:first-child .v { margin: 0; }
+  .stat:first-child .sub { margin-left: auto; }
+  .stat:nth-child(2) { border-left: 0; }
+}
+
+/* leaderboard */
+.board { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.lrow { width: 100%; display: grid; grid-template-columns: 22px 44px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 13px 18px; border: 0; border-top: 1px solid var(--line); background: none; text-align: left; transition: background .15s ease; }
+.lrow:first-child { border-top: 0; }
+.lrow:hover { background: var(--raise); }
+.lrow .pos { font-family: var(--f-mono); font-size: 13px; color: var(--faint); text-align: center; font-variant-numeric: tabular-nums; }
+.lrow.lead .pos { color: var(--c); }
+.lrow .av { --s: 44px; }
+.lrow.lead .av { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--c); }
+.lmain { min-width: 0; display: grid; gap: 2px; }
+.lname { font-weight: 600; font-size: 16px; letter-spacing: -.015em; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.lname span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.llast { color: var(--muted); font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.llast:empty::before { content: "Encara res"; font-style: italic; color: var(--faint); }
+.lcount { display: grid; justify-items: end; gap: 7px; }
+.lcount b { font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; line-height: 1; }
+.lbar { width: 56px; height: 3px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.lbar i { display: block; height: 100%; background: var(--c); border-radius: 3px; }
+.mine-tag { font-style: normal; font-family: var(--f-mono); font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; background: var(--surface-2); color: var(--muted); padding: 2px 6px; border-radius: 5px; flex: none; }
+
+/* friend hero */
+.phero { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding-top: 8px; }
+.phero .av { --s: 96px; box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--c), 0 20px 50px -10px color-mix(in srgb, var(--c) 60%, transparent); font-size: 38px; }
+.phero .grow { flex: 1; min-width: 0; }
+.phero h1 { font-weight: 700; font-size: clamp(34px, 7vw, 52px); letter-spacing: -.045em; line-height: 1; margin: 0; overflow-wrap: anywhere; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.phero .meta { color: var(--muted); margin-top: 10px; font-size: 14px; display: flex; gap: 6px 16px; flex-wrap: wrap; }
+.phero .meta b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.chipbtn { border: 1px solid var(--line-2); background: var(--raise); border-radius: 10px; padding: 7px 12px; font-size: 13px; font-weight: 500; color: var(--muted); transition: color .15s ease, border-color .15s ease; }
+.chipbtn:hover { color: var(--ink); border-color: var(--c); }
+.pacts { display: flex; gap: 8px; flex-wrap: wrap; flex-basis: 100%; }
+.pacts:not(:has(button)) { display: none; }
+.pencil { display: inline-grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line-2); background: var(--raise); border-radius: 50%; color: var(--muted); }
+.pencil:hover { color: var(--ink); border-color: var(--c); }
+
+/* timeline */
+.timeline { position: relative; display: grid; gap: 12px; }
+.timeline::before { content: ""; position: absolute; left: 19px; top: 14px; bottom: 24px; width: 1px; background: linear-gradient(var(--line-2), var(--line) 80%, transparent); }
+.year { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.year:first-child { margin-top: 0; }
+.year .yp { background: var(--ink); color: var(--bg); font-weight: 700; font-size: 14px; letter-spacing: -.01em; padding: 4px 11px; border-radius: 999px; font-variant-numeric: tabular-nums; box-shadow: 0 0 0 4px var(--bg); }
+.year .yc { font-size: 12px; color: var(--faint); }
+.entry { position: relative; padding-left: 40px; }
+.entry::before { content: ""; position: absolute; left: 16px; top: 26px; width: 7px; height: 7px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px var(--bg), 0 0 12px var(--c); }
+.flat { display: grid; gap: 10px; }
+.flat .entry { padding-left: 0; }
+.flat .entry::before { display: none; }
+
+.card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 20px 20px 14px; overflow: hidden; min-width: 0; transition: border-color .15s ease; }
+.card:hover { border-color: var(--line-2); }
+.card blockquote::before { content: "“"; color: var(--c); }
+.card blockquote::after { content: "”"; color: var(--c); }
+.card blockquote { margin: 0; font-weight: 500; font-size: clamp(18px, 3.2vw, 21px); line-height: 1.32; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.card .ctx { margin: 8px 0 0; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.card footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.card .left { display: inline-flex; gap: 6px 12px; align-items: center; flex-wrap: wrap; min-width: 0; flex: 1; }
+.card footer > .qacts, .card footer > .confirm { flex: none; }
+.qacts { display: inline-flex; gap: 2px; }
+.del.edit:hover { color: var(--ink); }
+.when { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.who { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13.5px; border: 0; background: none; padding: 0; }
+.who .av { --s: 22px; }
+.added { font-size: 12.5px; color: var(--faint); }
+.place { display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; padding: 0; font-size: 12.5px; font-weight: 500; color: var(--muted); min-width: 0; overflow-wrap: anywhere; text-align: left; }
+.place:hover { color: var(--ink); }
+.place svg, .years button svg { flex: none; }
+.years button svg { vertical-align: -1px; margin-right: 4px; }
+.del { border: 0; background: none; color: var(--faint); font-size: 12.5px; padding: 4px 6px; border-radius: 6px; }
+.del:hover { color: var(--danger); }
+.confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+.confirm button { border: 0; border-radius: 8px; padding: 4px 10px; font-weight: 600; }
+.confirm .yes { background: var(--danger); color: var(--on-c); }
+.confirm .no { background: var(--surface-2); }
+
+.empty { background: var(--surface); border: 1px dashed var(--line-2); border-radius: 22px; padding: 36px 24px; text-align: center; }
+.empty h3 { font-weight: 600; font-size: 20px; letter-spacing: -.02em; margin: 0 0 6px; text-wrap: balance; }
+.empty p { color: var(--muted); margin: 0 auto; max-width: 44ch; }
+
+/* filters */
+.filtered { display: grid; gap: 12px; }
+.filtered > .label { margin: 0; }
+.filters { display: grid; gap: 10px; }
+.search { position: relative; }
+.search svg { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search input[type=text] { width: 100%; background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px; padding: 13px 44px 13px 44px; font-size: 16px; color: var(--ink); }
+.search input[type=text]::placeholder { color: var(--faint); }
+.search input[type=text]:focus { outline: none; border-color: var(--c, var(--brand)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c, var(--brand)) 18%, transparent); }
+.search .clr { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); border: 0; background: var(--surface-2); width: 28px; height: 28px; border-radius: 50%; color: var(--muted); font-size: 12px; line-height: 1; }
+.years { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.years::-webkit-scrollbar { display: none; }
+.years button { flex: none; border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 6px 12px; font-weight: 500; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; transition: color .15s ease, border-color .15s ease; }
+.years button:hover { color: var(--ink); }
+.years button small { font-size: 11px; color: var(--faint); margin-left: 5px; }
+.years button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.years button[aria-pressed="true"] small { color: var(--muted); }
+#results > .label { margin-top: 10px; }
+.fcount { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+/* ratings */
+.rating { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.score { display: inline-flex; align-items: baseline; gap: 5px; font-variant-numeric: tabular-nums; }
+.score b { font-size: 20px; font-weight: 700; letter-spacing: -.03em; color: var(--c); }
+.score span { font-size: 12.5px; color: var(--muted); }
+.score.none span { color: var(--faint); }
+.ratebtn { border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: var(--ink); transition: border-color .15s ease; }
+.ratebtn:hover, .ratebtn[aria-expanded="true"] { border-color: var(--c); }
+.ratebtn.voted { background: color-mix(in srgb, var(--c) 16%, transparent); border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+.rnote { font-size: 13px; font-weight: 500; color: var(--ink); }
+.picker { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
+.picker button { border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 9px; height: 38px; padding: 0; font-weight: 600; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.picker button:hover { color: var(--ink); border-color: var(--c); }
+.picker button.on { background: color-mix(in srgb, var(--c) 28%, var(--surface-2)); border-color: transparent; color: var(--ink); }
+.picker button[aria-pressed="true"] { background: var(--c); color: var(--on-c); }
+.unrate { margin-top: 8px; border: 0; background: none; padding: 0; font-size: 12.5px; color: var(--faint); }
+.unrate:hover { color: var(--danger); }
+.rkno { position: absolute; top: 18px; right: 20px; font-family: var(--f-mono); font-size: 13px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.card.rk1 .rkno { color: var(--c); }
+.card.has-rk blockquote { padding-right: 40px; }
+.seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--surface); border: 1px solid var(--line-2); border-radius: 12px; }
+.seg button { border: 0; background: none; border-radius: 9px; padding: 7px 14px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-selected="true"], .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg.sm { border-radius: 10px; }
+.seg.sm button { padding: 4px 10px; font-size: 12px; text-transform: none; letter-spacing: 0; border-radius: 7px; }
+.label .seg { align-self: center; }
+mark { background: color-mix(in srgb, var(--c, var(--brand)) 35%, transparent); color: var(--ink); border-radius: 3px; padding: 0 1px; }
+
+/* dock */
+.dock { position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); padding-top: 28px; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); pointer-events: none; background: linear-gradient(to bottom, transparent, var(--bg) 60%); }
+.dock-in { pointer-events: auto; max-width: 600px; margin: 0 auto; background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); border: 1px solid var(--line-2); border-radius: 22px; box-shadow: 0 20px 50px -20px #000; display: flex; gap: 2px; padding: 6px; overflow-x: auto; scrollbar-width: none; }
+.dock-in::-webkit-scrollbar { display: none; }
+.dk { flex: 1 0 62px; display: grid; justify-items: center; gap: 5px; border: 0; background: none; border-radius: 16px; padding: 8px 4px 7px; font-size: 11.5px; font-weight: 500; color: var(--faint); min-width: 62px; transition: color .15s ease, background .15s ease; }
+.dk:hover { color: var(--muted); }
+.dk .av { --s: 32px; opacity: .72; transition: opacity .15s ease, box-shadow .15s ease; }
+.dk .ico { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: var(--surface-2); color: var(--muted); }
+.dk .nm { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dk[aria-current="true"] { color: var(--ink); background: rgba(255,255,255,.06); }
+.dk[aria-current="true"] .av { opacity: 1; box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--c); }
+.dk[aria-current="true"] .ico { background: var(--ink); color: var(--bg); }
+
+.fab { position: fixed; z-index: 16; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(108px + env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; border-radius: 18px; border: 0; background: var(--c, var(--brand)); color: var(--on-c); display: grid; place-items: center; box-shadow: 0 16px 34px -12px var(--c, var(--brand)), inset 0 1px 0 rgba(255,255,255,.35); transition: transform .18s cubic-bezier(.3,1.6,.5,1); }
+.fab svg { width: 24px; height: 24px; }
+.fab:hover { transform: rotate(90deg) scale(1.05); }
+
+/* sheets */
+.scrim { position: fixed; inset: 0; z-index: 30; background: var(--scrim); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: flex-end; justify-content: flex-end; padding: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px)); }
+.sheet { width: min(460px, 100%); max-height: 100%; overflow-y: auto; background: var(--surface); border: 1px solid var(--line-2); border-radius: 24px; padding: 22px; box-shadow: 0 30px 80px -20px #000; transform-origin: bottom right; animation: pop .22s cubic-bezier(.3,1.3,.5,1); }
+@keyframes pop { from { transform: scale(.7); opacity: 0; } }
+.sheet h3 { font-weight: 700; font-size: 22px; margin: 0 0 18px; letter-spacing: -.03em; }
+form { display: grid; gap: 14px; }
+.f { display: grid; gap: 7px; font-size: 13px; font-weight: 500; color: var(--muted); }
+input[type=text], input[type=date], textarea { width: 100%; background: var(--bg); border: 1px solid var(--line-2); border-radius: 12px; padding: 11px 13px; font-size: 16px; color: var(--ink); }
+input::placeholder, textarea::placeholder { color: var(--faint); }
+textarea { min-height: 96px; resize: vertical; font-weight: 500; font-size: 18px; line-height: 1.3; letter-spacing: -.015em; }
+input:focus, textarea:focus { outline: none; border-color: var(--c, var(--brand)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c, var(--brand)) 18%, transparent); }
+.pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.pick button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 3px 12px 3px 3px; font-weight: 500; font-size: 14px; color: var(--muted); }
+.pick button .av { --s: 24px; }
+.pick button[aria-pressed="true"] { background: var(--c); border-color: var(--c); color: var(--on-c); font-weight: 600; }
+.pick .new { border-style: dashed; padding-left: 12px; }
+.actions { display: flex; gap: 10px; justify-content: flex-end; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 12px; padding: 11px 18px; font-weight: 600; font-size: 14.5px; }
+.btn.primary { background: var(--c, var(--brand)); color: var(--on-c); }
+.btn.ghost { background: transparent; color: var(--muted); }
+.btn.soft { background: var(--surface-2); }
+.btn.danger { background: transparent; color: var(--danger); padding-left: 0; font-weight: 500; }
+.btn:disabled { opacity: .4; cursor: default; }
+.err { color: var(--danger); font-size: 13.5px; margin: 0; }
+.namerow { display: flex; gap: 8px; }
+.namerow input { flex: 1; min-width: 0; }
+
+/* onboarding */
+.onb { position: fixed; inset: 0; z-index: 40; background: radial-gradient(80% 50% at 50% 0%, color-mix(in srgb, var(--c, var(--brand)) 22%, transparent), transparent), var(--bg); overflow-y: auto; padding-block: calc(32px + env(safe-area-inset-top, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)); }
+.onb .inner { max-width: 520px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 24px; }
+.onb .steps { font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.onb h2 { font-weight: 700; font-size: clamp(32px, 8vw, 44px); letter-spacing: -.045em; line-height: 1.02; margin: 8px 0 12px; text-wrap: balance; }
+.onb p.lead { color: var(--muted); margin: 0; font-size: 16px; max-width: 44ch; }
+.who-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.who-opt { display: flex; align-items: center; gap: 10px; text-align: left; border: 1px solid var(--line-2); background: var(--surface); border-radius: 16px; padding: 10px; font-weight: 600; font-size: 15px; min-width: 0; transition: border-color .15s ease; }
+.who-opt:hover:not(:disabled) { border-color: var(--c); }
+.who-opt .av { --s: 40px; }
+.who-opt span.n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.who-opt small { display: block; font-weight: 400; font-size: 12px; color: var(--faint); }
+.who-opt:disabled { opacity: .45; cursor: default; }
+.who-opt.new { border-style: dashed; background: transparent; color: var(--muted); justify-content: center; font-weight: 500; }
+.photo-drop { display: grid; justify-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 28px 20px; }
+.photo-drop .av { --s: 140px; font-size: 54px; box-shadow: 0 0 0 4px var(--surface), 0 0 0 6px var(--c), 0 24px 60px -16px color-mix(in srgb, var(--c) 70%, transparent); }
+.filebtn { position: relative; display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; padding: 10px 18px; font-weight: 600; font-size: 14.5px; background: var(--surface-2); border: 1px solid var(--line-2); cursor: pointer; }
+.filebtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.filebtn:focus-within { outline: 2px solid var(--c, var(--brand)); outline-offset: 2px; }
+.hint { font-size: 13px; color: var(--faint); text-align: center; margin: 0; }
+
+.toast { position: fixed; z-index: 50; left: 50%; bottom: calc(116px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; white-space: nowrap; box-shadow: 0 16px 40px -12px #000; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
 </head>
 <body>
-<main>
-  <img class="logo" src="icon-512.png" alt="Logo de COOL NAME PENDING: un cargol">
-  <h1>COOL NAME <span>PENDING</span></h1>
-
-  <section id="go" hidden>
-    <p class="small">Obrint l'app…</p>
-  </section>
-
-  <section id="setup" style="display:grid;gap:14px;width:100%">
-    <div class="card">
-      <h2>iPhone (Safari)</h2>
-      <ol>
-        <li>Prem el botó <b>Compartir</b> (el quadrat amb la fletxa).</li>
-        <li>Tria <b>Afegeix a la pantalla d'inici</b>.</li>
-        <li>Prem <b>Afegeix</b>.</li>
-      </ol>
-    </div>
-    <div class="card">
-      <h2>Android (Chrome)</h2>
-      <ol>
-        <li>Prem el menú <b>⋮</b> de dalt a la dreta.</li>
-        <li>Tria <b>Afegeix a la pantalla d'inici</b>.</li>
-      </ol>
-    </div>
-    <button id="done" type="button">Ja l'he afegit</button>
-    <a class="go" id="open" href="#">Obre l'app ara</a>
-    <p class="small">Quan l'hagis afegit i premut «Ja l'he afegit», el cargol de la pantalla d'inici t'obrirà l'app directament.</p>
-  </section>
+<header class="topbar">
+  <div class="wrap">
+    <button class="brand" data-view="all" aria-label="COOL NAME PENDING, inici"><span class="logo"><svg aria-hidden="true" viewBox="14 18 80 64" fill="none" stroke="currentColor" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"><path d="M46 58C46 52 37 52 37 59C37 67 50 68 53 59C56 49 45 42 36 46C26 51 24 66 33 72C39 76 47 75 56 73C64 71 72 71 79 72C83 72 86 70 86 66"/><path d="M27 70C17 52 26 26 46 24C66 22 80 40 79 58C79 63 81 66 84 66"/><path d="M83.5 62L82 53"/><path d="M86.5 63L90 55"/></svg></span>Cool name <span>pending</span></button>
+    <span id="meSlot"></span>
+  </div>
+</header>
+<main class="wrap" id="main">
+  <p class="status">Carregant les frases…</p>
 </main>
+<nav class="dock" aria-label="La colla"><div class="dock-in" id="dock"></div></nav>
+<button class="fab" id="fab" aria-label="Afegir frase" title="Afegir frase" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+<div id="sheetHost"></div>
+<div id="onbHost"></div>
+<div id="toastHost"></div>
 <script>
-  const APP = "https://claude.ai/artifact/3b3hJ7NwPraJ7CjJEF6DyY";
-  const KEY = "cnp-installed";
-  document.getElementById("open").href = APP;
-  let installed = false;
-  try { installed = localStorage.getItem(KEY) === "1"; } catch (e) {}
-  const setup = new URLSearchParams(location.search).has("setup");
-  if (installed && !setup) {
-    document.getElementById("setup").hidden = true;
-    document.getElementById("go").hidden = false;
-    location.replace(APP);
+const PALETTE = ["#8b7bff", "#ff6b4a", "#2dd4bf", "#f472b6", "#60a5fa", "#fbbf24", "#4ade80", "#c084fc", "#fb923c", "#22d3ee", "#fb7185", "#a3e635"];
+/* Colors saved by the first version of the app, mapped onto the brighter palette that reads on the dark theme. */
+const OLD_COLORS = { "#6c4cf5": 0, "#e2462f": 1, "#0f9b8e": 2, "#d9488f": 3, "#2f7be2": 4, "#c98a00": 5, "#4a9d2b": 6, "#9b3fd1": 7, "#e06a12": 8, "#2a8fb0": 9, "#b03a5b": 10, "#5a6b2f": 11 };
+const MONTHS = ["gen", "febr", "març", "abr", "maig", "juny", "jul", "ag", "set", "oct", "nov", "des"];
+const MONTHS_LONG = ["de gener", "de febrer", "de març", "d'abril", "de maig", "de juny", "de juliol", "d'agost", "de setembre", "d'octubre", "de novembre", "de desembre"];
+const PIN_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>`;
+const PEN_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>`;
+const HOME_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg>`;
+
+const state = {
+  db: null, canWrite: true, myUid: null,
+  friends: [], quotes: [], loaded: { friends: false, quotes: false },
+  view: "all", newestFirst: false, confirmId: null, filter: { q: "", year: "all", place: "all" },
+  form: null, profile: null, onb: null, onbDismissed: false,
+  votes: [], friendTab: "chrono", boardMode: "score", rateOpen: null,
+};
+
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const capName = s => s.charAt(0).toUpperCase() + s.slice(1);
+const initial = n => (n || "?").trim().charAt(0).toUpperCase();
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const fmtDate = iso => { const [y, m, d] = (iso || "").split("-").map(Number); return y ? `${d} ${MONTHS[m - 1]} ${y}` : "Sense data"; };
+const friendById = id => state.friends.find(f => f.id === id);
+const colorOf = f => f?.color in OLD_COLORS ? PALETTE[OLD_COLORS[f.color]] : (f?.color || PALETTE[0]);
+const quotesOf = id => state.quotes.filter(q => q.friendId === id);
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const safePhoto = p => typeof p === "string" && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(p) ? p : null;
+const me = () => state.myUid ? state.friends.find(f => f.userId === state.myUid) : null;
+const myVoteOf = vs => vs.find(v => v.userId === state.myUid || (me() && v.voterId === me().id));
+
+/* Accent-insensitive search: "nedar" finds "Nedar", "cancion" finds "cançó". */
+const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const placeKey = s => norm(s).trim().replace(/\s+/g, " ");
+const filtering = () => !!state.filter.q.trim() || state.filter.year !== "all" || state.filter.place !== "all";
+function applyFilter(list) {
+  const q = norm(state.filter.q.trim());
+  return list.filter(x => (state.filter.year === "all" || (x.date || "").startsWith(state.filter.year)) &&
+    (state.filter.place === "all" || placeKey(x.place) === state.filter.place) &&
+    (!q || norm(x.text).includes(q) || norm(x.context).includes(q) || norm(x.place).includes(q) || norm(friendById(x.friendId)?.name).includes(q)));
+}
+function hl(text) {
+  const q = norm(state.filter.q.trim());
+  if (!q) return esc(text);
+  const n = norm(text);
+  let out = "", i = 0, k;
+  while ((k = n.indexOf(q, i)) !== -1) { out += esc(text.slice(i, k)) + "<mark>" + esc(text.slice(k, k + q.length)) + "</mark>"; i = k + q.length; }
+  return out + esc(text.slice(i));
+}
+
+/* Each person scores a quote 1-10; a quote's score is the mean of its votes, a person's score the mean of their rated quotes. */
+const fmtScore = x => x.toFixed(1).replace(".", ",");
+function scoreOf(qid) {
+  const vs = state.votes.filter(v => v.quoteId === qid);
+  return { n: vs.length, avg: vs.length ? vs.reduce((t, v) => t + v.score, 0) / vs.length : null, mine: myVoteOf(vs)?.score ?? null };
+}
+function friendScore(fid) {
+  const rated = quotesOf(fid).map(q => scoreOf(q.id)).filter(x => x.n);
+  return { rated: rated.length, avg: rated.length ? rated.reduce((t, x) => t + x.avg, 0) / rated.length : null };
+}
+function boardRows(mode) {
+  const rows = state.friends.map(f => { const n = quotesOf(f.id).length, sc = friendScore(f.id); return { f, n, avg: sc.avg, val: mode === "score" ? sc.avg : n }; });
+  rows.sort((a, b) => (b.val ?? -1) - (a.val ?? -1) || b.n - a.n);
+  rows.forEach(r => { r.pos = r.val == null ? null : rows.findIndex(x => x.val === r.val) + 1; });
+  return rows;
+}
+function bestQuote(fid) {
+  return quotesOf(fid).map(q => ({ q, s: scoreOf(q.id) })).filter(x => x.s.n).sort((a, b) => b.s.avg - a.s.avg || b.s.n - a.s.n)[0]?.q;
+}
+
+function ratingRow(q, ask) {
+  const s = scoreOf(q.id);
+  const own = me() && q.friendId === me().id;
+  const canVote = state.canWrite && state.myUid && !own;
+  const asking = ask && canVote && !s.mine;
+  const open = canVote && (asking || state.rateOpen === q.id);
+  const badge = `<span class="score${s.n ? "" : " none"}">${s.n ? `<b>${fmtScore(s.avg)}</b><span>/10 · ${plural(s.n, "vot", "vots")}</span>` : `<span>Sense puntuar</span>`}</span>`;
+  const btn = asking ? `<span class="rnote">Quina nota li poses?</span>` : canVote ? `<button class="ratebtn${s.mine ? " voted" : ""}" data-rate-open="${esc(q.id)}" aria-expanded="${open}">${s.mine ? `La teva nota: ${s.mine}` : "Puntua"}</button>` : "";
+  const picker = open ? `<div class="picker" role="group" aria-label="Puntua del 1 al 10">${Array.from({ length: 10 }, (_, i) => i + 1).map(v => `<button data-rate="${esc(q.id)}" data-v="${v}" aria-pressed="${s.mine === v}" class="${s.mine && v < s.mine ? "on" : ""}">${v}</button>`).join("")}</div>${s.mine ? `<button class="unrate" data-unrate="${esc(q.id)}">Treu la meva nota</button>` : ""}` : "";
+  return `<div class="rating">${badge}${btn}</div>${picker}`;
+}
+
+async function vote(qid, v) {
+  if (!state.myUid) return;
+  const old = myVoteOf(state.votes.filter(x => x.quoteId === qid));
+  const id = old?.id || `${qid}__${me()?.id || state.myUid}`;
+  const prev = state.votes;
+  state.votes = state.votes.filter(x => x.id !== id);
+  if (v) state.votes = [...state.votes, { id, quoteId: qid, userId: state.myUid, score: v }];
+  state.rateOpen = null; renderMain();
+  try {
+    if (v) await state.db.doc("votes/" + id).set({ quoteId: qid, userId: state.myUid, voterId: me()?.id || null, score: v, at: Date.now() });
+    else await state.db.doc("votes/" + id).delete();
+    toast(v ? `Has posat un ${v}` : "Nota treta");
+  } catch { state.votes = prev; renderMain(); toast("No s'ha pogut desar la nota"); }
+}
+
+function av(f, cls = "") {
+  const p = safePhoto(f?.photo);
+  return `<span class="av ${cls}" style="--c:${esc(colorOf(f))}">${p ? `<img src="${p}" alt="">` : esc(initial(f?.name))}</span>`;
+}
+
+function sortQuotes(list, newestFirst = state.newestFirst) {
+  const dir = newestFirst ? -1 : 1;
+  return [...list].sort((a, b) => dir * ((a.date || "").localeCompare(b.date || "") || (a.createdAt || 0) - (b.createdAt || 0)));
+}
+
+function toast(msg) {
+  const host = $("#toastHost");
+  host.innerHTML = `<div class="toast" role="status">${esc(msg)}</div>`;
+  clearTimeout(toast.t); toast.t = setTimeout(() => host.innerHTML = "", 2200);
+}
+
+/* Same quote for everyone all day; every quote appears once before any repeats. */
+function dailyQuote() {
+  const arr = [...state.quotes].sort((a, b) => a.id < b.id ? -1 : 1);
+  if (!arr.length) return null;
+  let seed = 20211;
+  for (let i = arr.length - 1; i > 0; i--) {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    const j = seed % (i + 1); [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  document.getElementById("done").addEventListener("click", () => {
-    try { localStorage.setItem(KEY, "1"); } catch (e) {}
-    location.replace(APP);
+  const d = new Date();
+  const day = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
+  return arr[day % arr.length];
+}
+
+/* ---------- render ---------- */
+function renderTop() {
+  const m = me();
+  $("#meSlot").innerHTML = m ? `<button class="mebtn" id="openProfile" style="--c:${esc(colorOf(m))}">${av(m)}${esc(m.name)}</button>` : "";
+}
+
+function renderDock() {
+  const home = `<button class="dk" data-view="all" aria-current="${state.view === "all"}"><span class="ico">${HOME_ICON}</span><span class="nm">Inici</span></button>`;
+  const fs = state.friends.map(f => `<button class="dk" data-view="${esc(f.id)}" aria-current="${state.view === f.id}" style="--c:${esc(colorOf(f))}">${av(f)}<span class="nm">${esc(f.name)}</span></button>`).join("");
+  $("#dock").innerHTML = home + fs;
+  $("#dock [aria-current='true']")?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+}
+
+function quoteCard(q, showWho, rankNo, ask) {
+  const f = friendById(q.friendId);
+  const adder = q.addedBy && q.addedBy !== q.friendId ? friendById(q.addedBy) : null;
+  const confirming = state.confirmId === q.id;
+  const del = !state.canWrite ? "" : confirming
+    ? `<span class="confirm">Esborrar? <button class="yes" data-del-yes="${esc(q.id)}">Esborra</button><button class="no" data-del-no>Cancel·la</button></span>`
+    : `<span class="qacts"><button class="del edit" data-edit="${esc(q.id)}">Edita</button><button class="del" data-del="${esc(q.id)}">Esborra</button></span>`;
+  return `<article class="entry" style="--c:${esc(colorOf(f))}"><div class="card${rankNo ? " has-rk" : ""}${rankNo === 1 ? " rk1" : ""}">
+    ${rankNo ? `<span class="rkno">#${rankNo}</span>` : ""}
+    <blockquote>${hl(q.text)}</blockquote>
+    ${q.context ? `<p class="ctx">${hl(q.context)}</p>` : ""}
+    ${ratingRow(q, ask)}
+    <footer>
+      <span class="left">
+        ${showWho && f ? `<button class="who" data-view="${esc(f.id)}">${av(f)}${esc(f.name)}</button>` : ""}
+        <time class="when" datetime="${esc(q.date)}">${esc(fmtDate(q.date))}</time>
+        ${q.place ? `<button class="place" data-place="${esc(placeKey(q.place))}" title="Mostra les frases d'aquí">${PIN_ICON}${hl(q.place)}</button>` : ""}
+        ${adder ? `<span class="added">· l'ha apuntada ${esc(adder.name)}</span>` : ""}
+      </span>
+      ${del}
+    </footer>
+  </div></article>`;
+}
+
+function timeline(list) {
+  let out = "", lastYear = null;
+  const perYear = {};
+  list.forEach(q => { const y = (q.date || "").slice(0, 4) || "—"; perYear[y] = (perYear[y] || 0) + 1; });
+  for (const q of sortQuotes(list)) {
+    const y = (q.date || "").slice(0, 4) || "—";
+    if (y !== lastYear) { out += `<div class="year"><span class="yp">${esc(y)}</span><span class="yc">${plural(perYear[y], "frase", "frases")}</span></div>`; lastYear = y; }
+    out += quoteCard(q, false);
+  }
+  return `<div class="timeline">${out}</div>`;
+}
+
+function topList(list) {
+  const withS = list.map(q => ({ q, s: scoreOf(q.id) }));
+  const rated = withS.filter(x => x.s.n).sort((a, b) => b.s.avg - a.s.avg || b.s.n - a.s.n);
+  const un = withS.filter(x => !x.s.n);
+  let out = rated.length ? `<div class="flat">${rated.map((x, i) => quoteCard(x.q, false, i + 1)).join("")}</div>` : `<div class="empty"><h3>Encara no hi ha notes</h3><p>Prem «Puntua» a qualsevol frase per posar-li una nota del 1 al 10.</p></div>`;
+  if (un.length) out += `<p class="label" style="margin-top:26px"><span>Encara sense puntuar</span><span>${un.length}</span></p><div class="flat">${sortQuotes(un.map(x => x.q), true).map(q => quoteCard(q, false)).join("")}</div>`;
+  return out;
+}
+
+function filterBar(list) {
+  const ys = {};
+  list.forEach(q => { const y = (q.date || "").slice(0, 4); if (y) ys[y] = (ys[y] || 0) + 1; });
+  const years = Object.keys(ys).sort().reverse();
+  if (state.filter.year !== "all" && !ys[state.filter.year]) state.filter.year = "all";
+  const ps = {};
+  list.forEach(q => { const k = placeKey(q.place); if (k) (ps[k] ||= { name: q.place.trim(), n: 0 }).n++; });
+  const places = Object.entries(ps).sort((a, b) => b[1].n - a[1].n || a[1].name.localeCompare(b[1].name, "ca"));
+  if (state.filter.place !== "all" && !ps[state.filter.place]) state.filter.place = "all";
+  return `<div class="filters">
+    <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="text" id="flt-q" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Busca una paraula, un nom, un lloc…" value="${esc(state.filter.q)}" aria-label="Cerca frases">
+      <button type="button" class="clr" id="flt-clr" data-clr aria-label="Esborra la cerca" ${state.filter.q ? "" : "hidden"}>✕</button>
+    </div>
+    ${years.length > 1 ? `<div class="years" role="group" aria-label="Filtra per any"><button type="button" data-year="all" aria-pressed="${state.filter.year === "all"}">Tots els anys</button>${years.map(y => `<button type="button" data-year="${esc(y)}" aria-pressed="${state.filter.year === y}">${esc(y)}<small>${ys[y]}</small></button>`).join("")}</div>` : ""}
+    ${places.length ? `<div class="years" role="group" aria-label="Filtra per lloc"><button type="button" data-place="all" aria-pressed="${state.filter.place === "all"}">${PIN_ICON}Qualsevol lloc</button>${places.map(([k, p]) => `<button type="button" data-place="${esc(k)}" aria-pressed="${state.filter.place === k}">${esc(p.name)}<small>${p.n}</small></button>`).join("")}</div>` : ""}
+  </div>`;
+}
+
+function renderResults() {
+  const box = $("#results"); if (!box) return;
+  const f = state.view !== "all" ? friendById(state.view) : null;
+  const all = f ? quotesOf(f.id) : state.quotes;
+  const clr = $("#flt-clr"); if (clr) clr.hidden = !state.filter.q;
+  if (f && (!filtering() || applyFilter(all).length)) {
+    const list = filtering() ? applyFilter(all) : all;
+    const head = filtering() ? `<p class="fcount">${list.length === 1 ? "1 frase trobada" : list.length + " frases trobades"}</p>` : "";
+    box.innerHTML = head + (state.friendTab === "top" ? topList(list) : timeline(list));
+    return;
+  }
+  if (!filtering()) {
+    const recent = [...all].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(1, 6);
+    if (!recent.length) { box.innerHTML = ""; return; }
+    box.innerHTML = `<p class="label"><span>Anteriors</span></p><div class="flat">${recent.map(q => quoteCard(q, true)).join("")}</div>`;
+    return;
+  }
+  const list = applyFilter(all);
+  if (!list.length) {
+    box.innerHTML = `<div class="empty"><h3>Cap frase coincideix</h3><p>Prova amb una altra paraula o un altre any.</p><div class="actions" style="justify-content:center;margin-top:14px"><button class="btn soft" data-clr-all>Esborra els filtres</button></div></div>`;
+    return;
+  }
+  const head = `<p class="fcount">${list.length === 1 ? "1 frase trobada" : list.length + " frases trobades"}</p>`;
+  box.innerHTML = head + (f ? timeline(list) : `<div class="flat">${sortQuotes(list, true).map(q => quoteCard(q, true)).join("")}</div>`);
+}
+
+function renderHome(demoNote) {
+  if (!state.friends.length) {
+    return `<div class="empty"><h3>Encara no hi ha cap frase</h3><p>Aquí sortirà la frase del dia i la pàgina de cada membre de la colla. Prem el botó + de baix a la dreta per apuntar la primera.</p></div>`;
+  }
+  const dq = dailyQuote();
+  const now = new Date();
+  let daily = "";
+  if (dq) {
+    const f = friendById(dq.friendId);
+    daily = `<section class="daily" style="--c:${esc(colorOf(f))}">
+      <div class="eyebrow"><i></i>${["Diumenge", "Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres", "Dissabte"][now.getDay()]}, ${now.getDate()} ${MONTHS_LONG[now.getMonth()]}</div>
+      <blockquote>“${esc(dq.text)}”</blockquote>
+      ${dq.context ? `<p class="ctx">${esc(dq.context)}</p>` : ""}
+      <div class="by">${av(f)}<div><div class="who">${esc(f?.name || "Algú")}</div><div class="when">${esc(fmtDate(dq.date))}${dq.place ? " · " + esc(dq.place) : ""}${scoreOf(dq.id).n ? " · " + fmtScore(scoreOf(dq.id).avg) + "/10" : ""}</div></div>
+      ${f ? `<button class="go" data-view="${esc(f.id)}">Totes les seves frases →</button>` : ""}</div>
+    </section>`;
+  }
+
+  const counts = state.friends.map(f => ({ f, n: quotesOf(f.id).length })).sort((a, b) => b.n - a.n);
+  const max = counts[0]?.n || 1;
+  const top = counts[0];
+  const tied = counts.filter(c => c.n === top?.n).length > 1;
+  const latest = [...state.quotes].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))[0];
+  const best = state.quotes.map(q => ({ q, s: scoreOf(q.id) })).filter(x => x.s.n).sort((a, b) => b.s.avg - a.s.avg || b.s.n - a.s.n)[0];
+  const bf = best && friendById(best.q.friendId);
+  const years = state.quotes.map(q => q.date?.slice(0, 4)).filter(Boolean).sort();
+  const stats = `<section class="stats">
+    <div class="stat"><div class="k">Frases</div><div class="v">${state.quotes.length}</div><div class="sub">${years.length ? (years[0] === years.at(-1) ? `des de ${years[0]}` : `${years[0]}–${years.at(-1)}`) : ""}</div></div>
+    <div class="stat"><div class="k">${tied ? "Empat al capdavant" : "Rei de la frase"}</div><div class="v">${top && top.n ? av(top.f) : ""}<span class="t">${top && top.n ? esc(top.f.name) : "—"}</span></div><div class="sub">${top ? plural(top.n, "frase", "frases") : ""}</div></div>
+    <div class="stat"><div class="k">Millor frase</div><div class="v">${bf ? av(bf) : ""}<span class="t">${bf ? esc(bf.name) : "—"}</span></div><div class="sub">${best ? `${fmtScore(best.s.avg)}/10 · ${plural(best.s.n, "vot", "vots")}` : "Encara sense notes"}</div></div>
+  </section>`;
+
+  const mode = state.boardMode;
+  const rows = boardRows(mode);
+  const crew = `<section><p class="label"><span>Rànquing</span><span class="seg sm" role="group" aria-label="Ordena el rànquing"><button data-board="score" aria-pressed="${mode === "score"}">Per nota</button><button data-board="count" aria-pressed="${mode === "count"}">Per nombre</button></span></p><div class="board">${
+    rows.map(({ f, n, avg, pos }) => {
+      const shown = mode === "score" ? bestQuote(f.id) : sortQuotes(quotesOf(f.id), true)[0];
+      const isMe = me()?.id === f.id;
+      const big = mode === "score" ? (avg != null ? fmtScore(avg) : "—") : n;
+      const pct = mode === "score" ? (avg ?? 0) * 10 : n / max * 100;
+      return `<button class="lrow${pos === 1 && (mode === "score" || n) ? " lead" : ""}" data-view="${esc(f.id)}" style="--c:${esc(colorOf(f))}">
+        <span class="pos">${pos ?? "–"}</span>${av(f)}
+        <span class="lmain"><span class="lname"><span>${esc(f.name)}</span>${isMe ? `<em class="mine-tag">Tu</em>` : ""}</span><span class="llast">${shown ? "“" + esc(shown.text) + "”" : ""}</span></span>
+        <span class="lcount"><b>${big}</b><span class="lbar"><i style="width:${Math.round(pct)}%"></i></span></span>
+      </button>`;
+    }).join("")
+  }</div></section>`;
+
+  const recentHtml = state.quotes.length ? `<section class="filtered"><p class="label"><span>Cerca</span></p>${filterBar(state.quotes)}<div id="results"></div></section>` : "";
+
+  const latestHtml = latest ? `<section><p class="label"><span>Última apuntada</span></p><div class="flat">${quoteCard(latest, true, null, true)}</div></section>` : "";
+
+  return demoNote + daily + stats + latestHtml + crew + recentHtml;
+}
+
+function renderFriend(f, demoNote) {
+  const qs = quotesOf(f.id);
+  const dates = qs.map(q => q.date).filter(Boolean).sort();
+  const isMe = me()?.id === f.id;
+  const fs = friendScore(f.id);
+  const rank = boardRows("score").find(r => r.f.id === f.id)?.pos;
+  return demoNote + `<section class="phero" style="--c:${esc(colorOf(f))}">
+      ${av(f)}
+      <div class="grow"><h1>${esc(f.name)}${isMe ? `<button class="pencil" id="editName" aria-label="Canvia el teu nom" title="Canvia el teu nom">${PEN_ICON}</button>` : ""}</h1>
+        <div class="meta"><span><b>${qs.length}</b> ${qs.length === 1 ? "frase" : "frases"}</span>${dates.length ? `<span>des del <b>${dates[0].slice(0, 4)}</b></span>` : ""}${fs.avg != null ? `<span>Nota mitjana <b>${fmtScore(fs.avg)}</b></span><span>Rànquing <b>#${rank}</b></span>` : ""}</div>
+      </div>
+      <span class="pacts">
+        ${isMe ? `<button class="chipbtn" id="openProfile2">Edita el perfil</button>` : ""}
+        ${qs.length > 1 && state.friendTab === "chrono" ? `<button class="chipbtn" id="sort">${state.newestFirst ? "Més recents primer" : "Més antigues primer"}</button>` : ""}
+      </span>
+    </section>` +
+    (qs.length ? `<section class="filtered"><div><span class="seg" role="tablist" aria-label="Ordre"><button role="tab" data-ftab="chrono" aria-selected="${state.friendTab === "chrono"}">Cronològic</button><button role="tab" data-ftab="top" aria-selected="${state.friendTab === "top"}">Millor puntuades</button></span></div>${filterBar(qs)}<div id="results"></div></section>` : `<div class="empty"><h3>${esc(f.name)} encara no ha dit res èpic</h3><p>O sí, però ningú ho ha apuntat. Prem + per afegir la primera.</p></div>`);
+}
+
+function renderMain() {
+  const main = $("#main");
+  if (!state.db) return;
+  if (!state.loaded.friends || !state.loaded.quotes) { main.innerHTML = `<p class="status">Carregant les frases…</p>`; return; }
+  const f = state.view !== "all" ? friendById(state.view) : null;
+  if (state.view !== "all" && !f) state.view = "all";
+  document.documentElement.style.setProperty("--c", f ? colorOf(f) : (me() ? colorOf(me()) : "var(--brand)"));
+  const demoNote = state.friends.some(x => x.demo) ? `<div class="demo-note"><b>Exemple</b><span>Aquestes frases són inventades per veure com queda l'app. S'esborraran quan carreguem les vostres.</span></div>` : "";
+  const typing = document.activeElement?.id === "flt-q" ? document.activeElement.selectionStart : null;
+  main.innerHTML = f ? renderFriend(f, demoNote) : renderHome(demoNote);
+  renderResults();
+  if (typing !== null) { const i = $("#flt-q"); if (i) { i.focus(); i.setSelectionRange(typing, typing); } }
+}
+
+function renderAll() { renderTop(); renderDock(); renderMain(); maybeOnboard(); }
+
+/* ---------- photo ---------- */
+function readPhoto(file) {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type.startsWith("image/")) return reject(new Error("type"));
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const S = 256, s = Math.min(img.naturalWidth, img.naturalHeight);
+      const c = document.createElement("canvas"); c.width = c.height = S;
+      c.getContext("2d").drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, S, S);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/jpeg", 0.82));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("decode")); };
+    img.src = url;
   });
+}
+const PHOTO_ERR = "No s'ha pogut llegir la imatge. Prova amb una foto JPG o PNG.";
+
+/* ---------- onboarding ---------- */
+function maybeOnboard() {
+  if (!state.db || !state.canWrite || !state.myUid || state.onbDismissed) return;
+  if (!state.loaded.friends || !state.loaded.quotes) return;
+  if (me()) { if (state.onb && !state.onb.saving) { state.onb = null; renderOnb(); } return; }
+  if (!state.onb) state.onb = { step: "pick", pickId: null, newName: "", photo: null, saving: false, error: "" };
+  if (state.onb.step === "pick") renderOnb();
+}
+
+function renderOnb() {
+  const host = $("#onbHost"), o = state.onb;
+  if (!o) { host.innerHTML = ""; return; }
+  if (o.step === "pick") {
+    const opts = state.friends.map(f => {
+      const taken = f.userId && f.userId !== state.myUid;
+      return `<button class="who-opt" data-onb-pick="${esc(f.id)}" style="--c:${esc(colorOf(f))}">${av(f)}<span style="min-width:0"><span class="n">${esc(f.name)}</span>${taken ? `<small>Ja triat · si ets tu, toca'l</small>` : ""}</span></button>`;
+    }).join("");
+    host.innerHTML = `<div class="onb" role="dialog" aria-modal="true" aria-labelledby="onb-t"><div class="inner">
+      <div><div class="steps">Pas 1 de 2</div><h2 id="onb-t">Qui ets de la colla?</h2><p class="lead">Tria el teu perfil. Així tothom sabrà qui ets i qui apunta cada frase.</p></div>
+      <div class="who-grid">${opts}<button class="who-opt new" data-onb-new>+ No hi surto</button></div>
+      ${o.newMode ? `<form id="onbNew" novalidate><label class="f">Com et diuen?<input type="text" id="onb-name" maxlength="30" autocomplete="off" value="${esc(o.newName)}" placeholder="El teu nom"></label>${o.error ? `<p class="err" role="alert">${esc(o.error)}</p>` : ""}<div class="actions"><button type="submit" class="btn primary">Continua</button></div></form>` : ""}
+    </div></div>`;
+    if (o.newMode) setTimeout(() => $("#onb-name")?.focus(), 30);
+    return;
+  }
+  const f = o.pickId ? friendById(o.pickId) : null;
+  const name = f ? f.name : o.newName;
+  const color = f ? colorOf(f) : PALETTE[state.friends.length % PALETTE.length];
+  const preview = { name, color, photo: o.photo || f?.photo };
+  host.innerHTML = `<div class="onb" role="dialog" aria-modal="true" aria-labelledby="onb-t" style="--c:${esc(color)}"><div class="inner">
+    <div><div class="steps">Pas 2 de 2</div><h2 id="onb-t">Posa-hi cara, ${esc(name)}</h2><p class="lead">La teva foto serà la teva icona dins l'app: al menú de baix, a la teva pàgina i a cada frase.</p></div>
+    <div class="photo-drop">${av(preview)}
+      <label class="filebtn">${safePhoto(preview.photo) ? "Canvia la foto" : "Tria una foto"}<input type="file" id="onb-file" accept="image/*"></label>
+      <p class="hint">Es retalla en quadrat automàticament.</p>
+    </div>
+    ${o.error ? `<p class="err" role="alert">${esc(o.error)}</p>` : ""}
+    <div class="actions"><button class="btn ghost" data-onb-back>Enrere</button><button class="btn primary" data-onb-done ${safePhoto(preview.photo) && !o.saving ? "" : "disabled"}>${o.saving ? "Desant…" : "Entra a l'app"}</button></div>
+  </div></div>`;
+}
+
+async function finishOnb() {
+  const o = state.onb; o.saving = true; o.error = ""; renderOnb();
+  try {
+    if (o.pickId) {
+      const snap = await state.db.doc("friends/" + o.pickId).get();
+      const cur = snap.data() || {};
+      await state.db.doc("friends/" + o.pickId).update({ userId: state.myUid, photo: o.photo || cur.photo });
+    } else {
+      await state.db.collection("friends").add({ name: o.newName, color: PALETTE[state.friends.length % PALETTE.length], photo: o.photo, userId: state.myUid, createdAt: Date.now() });
+    }
+    if (o.pickId) {
+      // Same person on a new phone: carry their earlier ratings over to this device's account.
+      state.votes.filter(v => v.voterId === o.pickId && v.userId !== state.myUid)
+        .forEach(v => state.db.doc("votes/" + v.id).update({ userId: state.myUid }).catch(() => {}));
+    }
+    state.onb = null; renderOnb(); toast("Benvingut a la colla");
+  } catch (e) {
+    o.saving = false; o.error = "No s'ha pogut desar el perfil. Revisa la connexió i torna-ho a provar."; renderOnb();
+  }
+}
+
+/* ---------- add quote sheet ---------- */
+function openEdit(id) {
+  const q = state.quotes.find(x => x.id === id); if (!q) return;
+  state.profile = null; state.confirmId = null;
+  state.form = { editId: id, friendId: q.friendId, newName: "", text: q.text || "", context: q.context || "", place: q.place || "", date: q.date || today(), saving: false, error: "" };
+  renderSheet();
+  setTimeout(() => $("#q-text")?.focus(), 50);
+}
+
+function openSheet() {
+  state.profile = null;
+  const preset = state.view !== "all" ? state.view : (state.friends[0]?.id ?? "__new");
+  state.form = { friendId: state.friends.length ? preset : "__new", newName: "", text: "", context: "", place: "", date: today(), saving: false, error: "" };
+  renderSheet();
+  setTimeout(() => ($("#q-text") || $("#q-new"))?.focus(), 50);
+}
+function closeSheet() { state.form = null; state.profile = null; renderSheet(); }
+
+function renderSheet() {
+  const host = $("#sheetHost");
+  if (state.profile) return renderProfileSheet(host);
+  const fm = state.form;
+  if (!fm) { host.innerHTML = ""; return; }
+  const sel = fm.friendId === "__new" ? null : friendById(fm.friendId);
+  const c = sel ? colorOf(sel) : PALETTE[state.friends.length % PALETTE.length];
+  const chips = state.friends.map(f => `<button type="button" data-pick="${esc(f.id)}" aria-pressed="${fm.friendId === f.id}" style="--c:${esc(colorOf(f))}">${av(f)}${esc(f.name)}</button>`).join("") +
+    `<button type="button" class="new" data-pick="__new" aria-pressed="${fm.friendId === "__new"}" style="--c:${c}">+ Algú nou</button>`;
+  host.innerHTML = `<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" style="--c:${c}">
+    <h3 id="sheet-title">${fm.editId ? "Edita la frase" : "Nova frase èpica"}</h3>
+    <form id="qform" novalidate>
+      <div class="f"><span>Qui ho ha dit?</span><div class="pick">${chips}</div></div>
+      ${fm.friendId === "__new" ? `<label class="f">Nom<input type="text" id="q-new" maxlength="30" autocomplete="off" value="${esc(fm.newName)}" placeholder="Ex. Marc"></label>` : ""}
+      <label class="f">La frase<textarea id="q-text" maxlength="500" placeholder="Tal com ho va dir, paraula per paraula">${esc(fm.text)}</textarea></label>
+      <label class="f">Context (opcional)<input type="text" id="q-ctx" maxlength="200" autocomplete="off" value="${esc(fm.context)}" placeholder="Ex. A les 4 de la matinada, tornant de festa"></label>
+      <label class="f">Lloc (opcional)<input type="text" id="q-place" maxlength="60" autocomplete="off" list="places-dl" value="${esc(fm.place)}" placeholder="Ex. Girona"></label>
+      <datalist id="places-dl">${[...new Map(state.quotes.filter(q => q.place).reverse().map(q => [placeKey(q.place), q.place.trim()])).values()].sort((a, b) => a.localeCompare(b, "ca")).map(p => `<option value="${esc(p)}"></option>`).join("")}</datalist>
+      <label class="f">Data<input type="date" id="q-date" value="${esc(fm.date)}" max="${today()}"></label>
+      ${fm.error ? `<p class="err" role="alert">${esc(fm.error)}</p>` : ""}
+      <div class="actions"><button type="button" class="btn ghost" data-close>Cancel·la</button><button type="submit" class="btn primary" ${fm.saving ? "disabled" : ""}>${fm.saving ? "Desant…" : fm.editId ? "Desa els canvis" : "Desa la frase"}</button></div>
+    </form>
+  </div></div>`;
+}
+
+function renderProfileSheet(host) {
+  const m = me(), p = state.profile;
+  if (!m) { state.profile = null; host.innerHTML = ""; return; }
+  host.innerHTML = `<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="prof-t" style="--c:${esc(colorOf(m))}">
+    <h3 id="prof-t">El teu perfil</h3>
+    <div class="photo-drop" style="box-shadow:none;background:var(--bg)">${av(m)}
+      <label class="filebtn">${p.saving ? "Desant…" : "Canvia la foto"}<input type="file" id="prof-file" accept="image/*" ${p.saving ? "disabled" : ""}></label>
+    </div>
+    <form id="profName" novalidate style="margin-top:16px">
+      <label class="f">El teu nom o sobrenom<span class="namerow"><input type="text" id="prof-name" maxlength="30" autocomplete="off" value="${esc(p.name ?? m.name)}"><button type="submit" class="btn primary" ${p.savingName ? "disabled" : ""}>${p.savingName ? "Desant…" : "Desa"}</button></span></label>
+    </form>
+    ${p.error ? `<p class="err" role="alert" style="margin-top:12px">${esc(p.error)}</p>` : ""}
+    <div class="actions" style="justify-content:space-between;margin-top:16px">
+      ${p.confirmUnlink ? `<span class="confirm">Deixar de ser ${esc(m.name)}? <button class="yes" data-unlink-yes>Sí</button><button class="no" data-unlink-no>No</button></span>` : `<button class="btn danger" data-unlink>No sóc ${esc(m.name)}</button>`}
+      <button class="btn soft" data-close>Fet</button>
+    </div>
+  </div></div>`;
+}
+
+function syncForm() {
+  const fm = state.form; if (!fm) return;
+  fm.newName = $("#q-new")?.value ?? fm.newName;
+  fm.text = $("#q-text")?.value ?? fm.text;
+  fm.context = $("#q-ctx")?.value ?? fm.context;
+  fm.place = $("#q-place")?.value ?? fm.place;
+  fm.date = $("#q-date")?.value ?? fm.date;
+}
+
+async function submitForm() {
+  syncForm();
+  const fm = state.form;
+  const text = fm.text.trim(), name = capName(fm.newName.trim());
+  if (fm.friendId === "__new" && !name) { fm.error = "Escriu el nom."; renderSheet(); $("#q-new")?.focus(); return; }
+  if (!text) { fm.error = "Falta la frase."; renderSheet(); $("#q-text")?.focus(); return; }
+  fm.error = ""; fm.saving = true; renderSheet();
+  try {
+    let friendId = fm.friendId;
+    if (friendId === "__new") {
+      const existing = state.friends.find(f => f.name.toLowerCase() === name.toLowerCase());
+      if (existing) friendId = existing.id;
+      else friendId = (await state.db.collection("friends").add({ name, color: PALETTE[state.friends.length % PALETTE.length], createdAt: Date.now() })).id;
+    }
+    if (fm.editId) {
+      await state.db.doc("quotes/" + fm.editId).update({ friendId, text, context: fm.context.trim(), place: fm.place.trim().replace(/\s+/g, " "), date: fm.date || today(), editedAt: Date.now() });
+      state.form = null; renderSheet(); renderDock(); renderMain(); toast("Canvis desats");
+      return;
+    }
+    const data = { friendId, text, context: fm.context.trim(), place: fm.place.trim().replace(/\s+/g, " "), date: fm.date || today(), createdAt: Date.now() };
+    if (me()) data.addedBy = me().id;
+    await state.db.collection("quotes").add(data);
+    state.form = null; state.view = friendId;
+    renderSheet(); renderDock(); renderMain(); toast("Frase desada"); window.scrollTo({ top: 0 });
+  } catch (e) {
+    fm.saving = false;
+    fm.error = e?.code === "not_granted" ? "No tens permís per afegir frases. Demana a qui ha creat l'app que te'n doni." : "No s'ha pogut desar. Revisa la connexió i torna-ho a provar.";
+    renderSheet();
+  }
+}
+
+async function saveName() {
+  const m = me(), p = state.profile; if (!m || !p) return;
+  const name = capName($("#prof-name").value.trim().replace(/\s+/g, " "));
+  p.name = name; p.error = "";
+  if (!name) { p.error = "El nom no pot quedar buit."; return renderSheet(); }
+  if (name === m.name) { p.name = undefined; return renderSheet(); }
+  if (state.friends.some(f => f.id !== m.id && f.name.toLowerCase() === name.toLowerCase())) { p.error = `Ja hi ha algú que es diu ${name}.`; return renderSheet(); }
+  p.savingName = true; renderSheet();
+  try { await state.db.doc("friends/" + m.id).update({ name }); state.profile = null; renderSheet(); toast("Nom actualitzat"); return; }
+  catch { p.error = "No s'ha pogut desar el nom. Torna-ho a provar."; }
+  p.savingName = false; renderSheet();
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", async e => {
+  const t = e.target.closest("button, #scrim");
+  if (!t) return;
+  if (t.id === "scrim") { if (e.target === t) closeSheet(); return; }
+  if (t.id === "fab") return openSheet();
+  if (t.id === "openProfile" || t.id === "openProfile2" || t.id === "editName") {
+    state.form = null; state.profile = { saving: false, error: "", confirmUnlink: false }; renderSheet();
+    if (t.id === "editName") { const i = $("#prof-name"); i?.focus(); i?.select(); }
+    return;
+  }
+  if ("close" in t.dataset) return closeSheet();
+  if (t.id === "sort") { state.newestFirst = !state.newestFirst; try { localStorage.setItem("fe-newest", state.newestFirst ? "1" : "0"); } catch {} return renderMain(); }
+  if (t.dataset.pick) { syncForm(); state.form.friendId = t.dataset.pick; state.form.error = ""; renderSheet(); (t.dataset.pick === "__new" ? $("#q-new") : $("#q-text"))?.focus(); return; }
+  if (t.dataset.place) {
+    state.filter.place = t.dataset.place; renderMain();
+    if (t.classList.contains("place")) $("#flt-q")?.scrollIntoView({ block: "center", behavior: "smooth" });
+    return;
+  }
+  if (t.dataset.rateOpen) { state.rateOpen = state.rateOpen === t.dataset.rateOpen ? null : t.dataset.rateOpen; return renderMain(); }
+  if (t.dataset.rate) return vote(t.dataset.rate, Number(t.dataset.v));
+  if (t.dataset.unrate) return vote(t.dataset.unrate, null);
+  if (t.dataset.ftab) { state.friendTab = t.dataset.ftab; return renderMain(); }
+  if (t.dataset.board) { state.boardMode = t.dataset.board; return renderMain(); }
+  if (t.dataset.year) { state.filter.year = t.dataset.year; return renderMain(); }
+  if ("clr" in t.dataset) { state.filter.q = ""; renderMain(); $("#flt-q")?.focus(); return; }
+  if ("clrAll" in t.dataset) { state.filter = { q: "", year: "all", place: "all" }; return renderMain(); }
+  if (t.dataset.view) { state.view = t.dataset.view; state.confirmId = null; state.filter = { q: "", year: "all", place: "all" }; renderDock(); renderMain(); window.scrollTo({ top: 0 }); return; }
+  if (t.dataset.edit) return openEdit(t.dataset.edit);
+  if (t.dataset.del) { state.confirmId = t.dataset.del; return renderMain(); }
+  if ("delNo" in t.dataset) { state.confirmId = null; return renderMain(); }
+  if (t.dataset.delYes) {
+    const id = t.dataset.delYes; state.confirmId = null;
+    try {
+      await state.db.doc("quotes/" + id).delete(); toast("Frase esborrada");
+      state.votes.filter(v => v.quoteId === id).forEach(v => state.db.doc("votes/" + v.id).delete().catch(() => {}));
+    }
+    catch { toast("No s'ha pogut esborrar"); renderMain(); }
+    return;
+  }
+  // onboarding
+  if (t.dataset.onbPick) { Object.assign(state.onb, { pickId: t.dataset.onbPick, step: "photo", photo: null, error: "" }); return renderOnb(); }
+  if ("onbNew" in t.dataset) { state.onb.newMode = true; state.onb.error = ""; return renderOnb(); }
+  if ("onbSkip" in t.dataset) { state.onbDismissed = true; state.onb = null; return renderOnb(); }
+  if ("onbBack" in t.dataset) { Object.assign(state.onb, { step: "pick", pickId: null, photo: null, error: "" }); return renderOnb(); }
+  if ("onbDone" in t.dataset) return finishOnb();
+  // profile
+  if ("unlink" in t.dataset) { state.profile.confirmUnlink = true; return renderSheet(); }
+  if ("unlinkNo" in t.dataset) { state.profile.confirmUnlink = false; return renderSheet(); }
+  if ("unlinkYes" in t.dataset) {
+    const m = me();
+    try { await state.db.doc("friends/" + m.id).update({ userId: null }); state.profile = null; state.onbDismissed = false; renderSheet(); }
+    catch { state.profile.error = "No s'ha pogut desfer. Torna-ho a provar."; renderSheet(); }
+  }
+});
+
+document.addEventListener("submit", e => {
+  e.preventDefault();
+  if (e.target.id === "qform") submitForm();
+  if (e.target.id === "profName") saveName();
+  if (e.target.id === "onbNew") {
+    const name = capName($("#onb-name").value.trim());
+    if (!name) { state.onb.error = "Escriu el teu nom."; return renderOnb(); }
+    if (state.friends.some(f => f.name.toLowerCase() === name.toLowerCase())) { state.onb.newName = name; state.onb.error = `Ja hi ha algú que es diu ${name}. Si ets tu, tria'l a la llista.`; return renderOnb(); }
+    Object.assign(state.onb, { newName: name, pickId: null, step: "photo", photo: null, error: "" }); renderOnb();
+  }
+});
+
+document.addEventListener("input", e => {
+  if (e.target.id === "onb-name" && state.onb) state.onb.newName = e.target.value;
+  if (e.target.id === "prof-name" && state.profile) state.profile.name = e.target.value;
+  if (e.target.id === "flt-q") { state.filter.q = e.target.value; renderResults(); }
+});
+
+document.addEventListener("change", async e => {
+  const file = e.target.files?.[0];
+  if (e.target.id === "onb-file" && file) {
+    try { state.onb.photo = await readPhoto(file); state.onb.error = ""; } catch { state.onb.error = PHOTO_ERR; }
+    renderOnb();
+  }
+  if (e.target.id === "prof-file" && file) {
+    const m = me(); if (!m) return;
+    state.profile.saving = true; state.profile.error = ""; renderSheet();
+    try { const photo = await readPhoto(file); await state.db.doc("friends/" + m.id).update({ photo }); state.profile.saving = false; toast("Foto actualitzada"); }
+    catch (err) { state.profile.saving = false; state.profile.error = err?.message === "decode" || err?.message === "type" ? PHOTO_ERR : "No s'ha pogut desar la foto."; }
+    renderSheet();
+  }
+});
+
+document.addEventListener("keydown", e => { if (e.key === "Escape" && (state.form || state.profile)) closeSheet(); });
+
+/* ---------- boot ---------- */
+try { state.newestFirst = localStorage.getItem("fe-newest") === "1"; } catch {}
+renderDock();
+
+/* Supabase stands in for the Claude artifact store: each table holds (id, data jsonb),
+   and this adapter gives the app the same collection/doc API it was written against. */
+function makeDb(sb) {
+  const subs = {}, timers = {};
+  const fire = c => {
+    clearTimeout(timers[c]);
+    timers[c] = setTimeout(async () => {
+      const { data, error } = await sb.from(c).select("id,data");
+      if (error) { (subs[c] || []).forEach(s => s.err?.(error)); return; }
+      const snap = { docs: data.map(r => ({ id: r.id, exists: true, data: () => r.data })) };
+      (subs[c] || []).forEach(s => s.cb(snap));
+    }, 80);
+  };
+  const ok = r => { if (r.error) throw r.error; return r; };
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) Object.keys(subs).forEach(fire); });
+  const doc = (c, id) => ({
+    id,
+    async get() { const { data } = ok(await sb.from(c).select("data").eq("id", id).maybeSingle()); return { id, exists: !!data, data: () => data?.data }; },
+    async set(d) { ok(await sb.from(c).upsert({ id, data: d })); fire(c); },
+    async update(d) { const cur = (await this.get()).data() || {}; ok(await sb.from(c).update({ data: { ...cur, ...d } }).eq("id", id)); fire(c); },
+    async delete() { ok(await sb.from(c).delete().eq("id", id)); fire(c); },
+  });
+  return {
+    collection: c => ({
+      onSnapshot(cb, err) {
+        if (!subs[c]) {
+          subs[c] = [];
+          sb.channel("t-" + c).on("postgres_changes", { event: "*", schema: "public", table: c }, () => fire(c)).subscribe();
+        }
+        subs[c].push({ cb, err });
+        fire(c);
+        return () => {};
+      },
+      async add(d) { const id = (crypto.randomUUID?.() || String(Math.random()).slice(2) + Date.now()).replace(/-/g, "").slice(0, 20); ok(await sb.from(c).insert({ id, data: d })); fire(c); return doc(c, id); },
+      doc: id => doc(c, id),
+    }),
+    doc: path => { const [c, id] = path.split("/"); return doc(c, id); },
+  };
+}
+
+function gate(title, text) {
+  $("#main").innerHTML = `<div class="empty"><h3>${esc(title)}</h3><p>${esc(text)}</p></div>`;
+}
+
+function askGroupCode(sb) {
+  return new Promise(resolve => {
+    const draw = (err, busy) => {
+      $("#onbHost").innerHTML = `<div class="onb" role="dialog" aria-modal="true" aria-labelledby="gate-t"><div class="inner">
+        <div style="display:grid;justify-items:start;gap:18px"><span class="brand"><span class="logo" style="width:56px;height:56px;border-radius:16px;padding:9px 8px 8px">${$(".brand .logo").innerHTML}</span></span>
+        <div><div class="steps">Només per a la colla</div><h2 id="gate-t">Quin és el codi?</h2><p class="lead">Demana el codi de la colla a qui t'ha passat l'enllaç. Només l'hauràs de posar un cop en aquest mòbil.</p></div></div>
+        <form id="gateForm" novalidate><label class="f">Codi de la colla<input type="text" id="gate-code" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="cargol-…"></label>
+        ${err ? `<p class="err" role="alert">${esc(err)}</p>` : ""}
+        <div class="actions"><button type="submit" class="btn primary" ${busy ? "disabled" : ""}>${busy ? "Comprovant…" : "Entra"}</button></div></form>
+      </div></div>`;
+      setTimeout(() => $("#gate-code")?.focus(), 30);
+    };
+    draw();
+    $("#onbHost").addEventListener("submit", async function onSubmit(e) {
+      if (e.target.id !== "gateForm") return;
+      e.preventDefault(); e.stopPropagation();
+      const code = $("#gate-code").value.trim().toLowerCase();
+      if (!code) return draw("Escriu el codi.");
+      draw("", true);
+      const { data, error } = await sb.rpc("join_group", { code });
+      if (error) return draw("No s'ha pogut comprovar. Revisa la connexió i torna-ho a provar.");
+      if (!data) return draw("Aquest codi no és correcte.");
+      $("#onbHost").removeEventListener("submit", onSubmit, true);
+      $("#onbHost").innerHTML = "";
+      resolve();
+    }, true);
+  });
+}
+
+function start(db) {
+  state.db = db;
+  $("#fab").hidden = false;
+  const onErr = () => gate("No es poden carregar les frases", "Revisa la connexió i torna a obrir l'app.");
+  db.collection("friends").onSnapshot(snap => {
+    state.friends = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(f => f.name).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    state.loaded.friends = true; renderAll();
+    if (state.profile && !state.profile.saving) renderSheet();
+  }, onErr);
+  db.collection("quotes").onSnapshot(snap => {
+    state.quotes = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(q => q.text);
+    state.loaded.quotes = true; renderAll();
+  }, onErr);
+  db.collection("votes").onSnapshot(snap => {
+    state.votes = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(v => v.quoteId && v.score >= 1 && v.score <= 10);
+    renderMain();
+  }, () => {});
+}
+
+(async () => {
+  const cfg = window.CNP_CONFIG || {};
+  if (!window.supabase || !cfg.url || !cfg.anonKey) return gate("L'app encara no està configurada", "Falta connectar la base de dades.");
+  const sb = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true } });
+  try {
+    let { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      const r = await sb.auth.signInAnonymously();
+      if (r.error) throw r.error;
+      session = r.data.session;
+    }
+    state.myUid = session.user.id;
+    const { data: member, error } = await sb.from("members").select("user_id").eq("user_id", state.myUid).maybeSingle();
+    if (error) throw error;
+    if (!member) await askGroupCode(sb);
+    start(makeDb(sb));
+  } catch (e) {
+    console.error(e);
+    gate("No es pot connectar", "Revisa la connexió i torna a obrir l'app.");
+  }
+})();
 </script>
 </body>
 </html>
