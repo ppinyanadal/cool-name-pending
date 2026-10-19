@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>COOL NAME PENDING</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b0c10">
+<meta name="apple-mobile-web-app-title" content="Cool Name">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root { --bg: #0b0c10; --surface: #13151b; --ink: #f4f5f8; --muted: #8e93a3; --line: rgba(255,255,255,.14); color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: radial-gradient(80% 50% at 50% 0%, rgba(139,123,255,.18), transparent), var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; display: grid; place-items: center; padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  main { width: 100%; max-width: 420px; display: grid; gap: 22px; justify-items: center; text-align: center; }
+  img.logo { width: 112px; height: 112px; border-radius: 26px; border: 1px solid var(--line); }
+  h1 { margin: 0; font-size: 15px; letter-spacing: .1em; font-weight: 700; }
+  h1 span { color: var(--muted); }
+  .card { width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; }
+  .card h2 { margin: 0 0 8px; font-size: 15px; }
+  .card ol { margin: 0; padding-left: 20px; color: var(--muted); }
+  .card li { margin: 4px 0; }
+  .card b { color: var(--ink); font-weight: 600; }
+  a.go, button { display: block; width: 100%; border: 0; border-radius: 14px; padding: 14px; font: inherit; font-weight: 600; text-align: center; text-decoration: none; cursor: pointer; }
+  a.go { background: var(--ink); color: var(--bg); }
+  button { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+  p.small { margin: 0; color: var(--muted); font-size: 13px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="icon-512.png" alt="Logo de COOL NAME PENDING: un cargol">
+  <h1>COOL NAME <span>PENDING</span></h1>
+
+  <section id="go" hidden>
+    <p class="small">Obrint l'app…</p>
+  </section>
+
+  <section id="setup" style="display:grid;gap:14px;width:100%">
+    <div class="card">
+      <h2>iPhone (Safari)</h2>
+      <ol>
+        <li>Prem el botó <b>Compartir</b> (el quadrat amb la fletxa).</li>
+        <li>Tria <b>Afegeix a la pantalla d'inici</b>.</li>
+        <li>Prem <b>Afegeix</b>.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>Android (Chrome)</h2>
+      <ol>
+        <li>Prem el menú <b>⋮</b> de dalt a la dreta.</li>
+        <li>Tria <b>Afegeix a la pantalla d'inici</b>.</li>
+      </ol>
+    </div>
+    <button id="done" type="button">Ja l'he afegit</button>
+    <a class="go" id="open" href="#">Obre l'app ara</a>
+    <p class="small">Quan l'hagis afegit i premut «Ja l'he afegit», el cargol de la pantalla d'inici t'obrirà l'app directament.</p>
+  </section>
+</main>
+<script>
+  const APP = "https://claude.ai/artifact/3b3hJ7NwPraJ7CjJEF6DyY";
+  const KEY = "cnp-installed";
+  document.getElementById("open").href = APP;
+  let installed = false;
+  try { installed = localStorage.getItem(KEY) === "1"; } catch (e) {}
+  const setup = new URLSearchParams(location.search).has("setup");
+  if (installed && !setup) {
+    document.getElementById("setup").hidden = true;
+    document.getElementById("go").hidden = false;
+    location.replace(APP);
+  }
+  document.getElementById("done").addEventListener("click", () => {
+    try { localStorage.setItem(KEY, "1"); } catch (e) {}
+    location.replace(APP);
+  });
+</script>
+</body>
+</html>
