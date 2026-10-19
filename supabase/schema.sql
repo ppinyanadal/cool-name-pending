@@ -26,15 +26,16 @@ language sql stable security definer set search_path = public as $$
   select exists (select 1 from members where user_id = auth.uid());
 $$;
 
-create or replace function public.join_group(code text) returns boolean
+drop function if exists public.join_group(text);
+create function public.join_group(code text) returns text
 language plpgsql security definer set search_path = public as $$
 begin
-  if auth.uid() is null then return false; end if;
+  if auth.uid() is null then return 'no_user'; end if;
   if exists (select 1 from secrets where key = 'group_code' and value = lower(trim(code))) then
     insert into members (user_id) values (auth.uid()) on conflict do nothing;
-    return true;
+    return 'ok';
   end if;
-  return false;
+  return 'bad_code';
 end;
 $$;
 

@@ -994,12 +994,14 @@ function askGroupCode(sb) {
     $("#onbHost").addEventListener("submit", async function onSubmit(e) {
       if (e.target.id !== "gateForm") return;
       e.preventDefault(); e.stopPropagation();
-      const code = $("#gate-code").value.trim().toLowerCase();
+      // Pasting on a phone can bring invisible characters or typographic dashes along.
+      const code = $("#gate-code").value.normalize("NFKC").toLowerCase().replace(/[\u2010-\u2015\u2212]/g, "-").replace(/[^a-z0-9-]/g, "");
       if (!code) return draw("Escriu el codi.");
       draw("", true);
       const { data, error } = await sb.rpc("join_group", { code });
-      if (error) return draw("No s'ha pogut comprovar. Revisa la connexió i torna-ho a provar.");
-      if (!data) return draw("Aquest codi no és correcte.");
+      if (error) { console.error(error); return draw(`No s'ha pogut comprovar (${error.code || error.message}). Revisa la connexió i torna-ho a provar.`); }
+      if (data === "no_user") return draw("La base de dades no reconeix aquest mòbil (no_user). Avisa qui ha creat l'app.");
+      if (data !== true && data !== "ok") return draw("Aquest codi no és correcte.");
       $("#onbHost").removeEventListener("submit", onSubmit, true);
       $("#onbHost").innerHTML = "";
       resolve();
